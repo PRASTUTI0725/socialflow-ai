@@ -1,0 +1,195 @@
+You are a senior full-stack engineer and product designer.
+
+Your task is to build a clean, modern MVP web application for an internal tool used by a social media agency.
+
+This is NOT a toy project. It should look like a real SaaS tool used by a team.
+
+---
+
+🧠 PRODUCT OVERVIEW:
+
+Build an "AI Social Media Workflow Assistant"
+
+Purpose:
+- Replace multiple tools (ChatGPT, Canva, Notion, etc.)
+- Allow team members to input a client brief
+- Generate structured content strategy output
+- Save time and reduce manual work
+
+This is an MVP, so focus on:
+- Clean UI
+- Structured output
+- Smooth UX
+- Simulated intelligence (no real API needed yet)
+
+---
+
+⚙️ TECH STACK:
+
+- Frontend: React (with Vite)
+- Styling: Tailwind CSS
+- Icons: Lucide React (or similar)
+- State: useState (no Redux)
+- No backend required
+- No authentication
+- No database
+
+---
+
+🎨 UI/UX REQUIREMENTS:
+
+Design must feel:
+- Minimal
+- Clean
+- Premium (Notion + Linear style)
+- Not flashy, not colorful chaos
+
+Layout:
+- Left sidebar (logo + sections)
+- Main dashboard area
+
+Sections:
+1. Dashboard
+2. Create Strategy (main feature)
+3. Output / Results
+
+---
+
+📥 INPUT FORM (CORE FEATURE):
+
+Create a form with the following fields:
+
+- Niche (dropdown + custom input)
+- Platform (Instagram, LinkedIn, Twitter)
+- Goal (Growth, Engagement, Sales)
+- Target Audience (text input)
+- Tone (Bold, Professional, Educational, Funny)
+- Content Focus (Reels, Posts, Mixed)
+- Extra Context (textarea)
+
+Add:
+- "Generate Strategy" button
+
+---
+
+⚙️ LOGIC (IMPORTANT):
+
+Since no API is used:
+- Simulate intelligent outputs using predefined structured templates
+- BUT make outputs dynamic based on selected niche
+
+Example:
+If niche = Fitness:
+→ Generate fitness-related ideas only
+
+If niche = Tech:
+→ Generate tech-related ideas
+
+Use conditional logic + arrays to simulate AI output.
+
+---
+
+📤 OUTPUT SECTION (VERY IMPORTANT):
+
+Display results in a structured, professional format:
+
+1. Content Ideas (10)
+2. Hooks (10)
+3. Captions (5)
+4. Reel Ideas (5)
+5. Hashtags
+6. 30-Day Content Calendar (table)
+
+Each section should:
+- Have headings
+- Be clearly separated
+- Look like a client deliverable
+
+---
+
+🧠 HIDDEN FEATURE (IMPORTANT):
+
+Internally generate a "Weakness Analysis":
+
+- 3 Problems
+- 3 Growth Opportunities
+
+BUT DO NOT DISPLAY THIS ON UI
+
+Store it in code/state for future use.
+
+---
+
+📅 CONTENT CALENDAR:
+
+Create a table:
+
+Columns:
+- Day
+- Content Type
+- Idea
+- Format
+
+Generate 30 rows dynamically.
+
+---
+
+📋 UTILITY FEATURES:
+
+- "Copy All" button (copies full output)
+- Clean scrollable output section
+- Responsive layout
+
+---
+
+🎯 DESIGN DETAILS:
+
+- Use rounded cards
+- Subtle shadows
+- Proper spacing (padding, margins)
+- Font: clean sans-serif
+- Avoid clutter
+
+---
+
+🧪 DEMO MODE (IMPORTANT):
+
+Ensure that:
+- When niche = Fitness
+→ Output includes:
+  - gym content
+  - transformation ideas
+  - diet tips
+  - motivational reels
+
+Make this demo feel REAL.
+
+---
+
+🚫 DO NOT:
+
+- Add login/signup
+- Add backend
+- Add API integration
+- Overcomplicate UI
+- Use dummy lorem ipsum
+
+---
+
+💡 FINAL GOAL:
+
+This should feel like:
+"A real internal tool used by a social media agency team"
+
+NOT:
+"A student project"
+
+---
+
+DELIVER:
+
+- Fully working React app
+- Clean structured components
+- Ready to run in Replit
+
+Focus on usability, structure, and clarity over complexity.

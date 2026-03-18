@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "AI Social Media Workflow Assistant"
+version = "1.0.0"
+id = "artifacts/social-workflow"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 25778
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/social-workflow run dev"
+
+[services.env]
+PORT = "25778"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/social-workflow", "run", "build"]
+publicDir = "artifacts/social-workflow/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

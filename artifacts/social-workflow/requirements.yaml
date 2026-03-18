@@ -1,0 +1,14 @@
+packages:
+  "framer-motion": "For premium smooth animations, staggered lists, and loading states"
+  "clsx": "For conditional class names merging"
+  "tailwind-merge": "For merging tailwind classes safely"
+  "date-fns": "For formatting dates in the content calendar"
+  "lucide-react": "For beautiful consistent icons"
+
+images: []
+
+notes:
+  - This is a pure frontend application with simulated generation.
+  - All state is managed locally via React Context (no external API calls).
+  - Uses Tailwind CSS v4 with custom Google Fonts (Plus Jakarta Sans + Inter).
+  - Generates realistic content strategies based on user input.
