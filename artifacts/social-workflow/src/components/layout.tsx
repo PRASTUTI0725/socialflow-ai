@@ -1,16 +1,19 @@
 import React from 'react';
 import { useWorkflow } from '@/context/workflow-context';
+import { useTheme } from '@/components/theme-provider';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, PenTool, Sparkles, LogOut, ChevronRight, Zap } from 'lucide-react';
+import { LayoutDashboard, PenTool, Sparkles, LogOut, ChevronRight, Zap, UserSearch, Moon, Sun } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { view, setView } = useWorkflow();
+  const { view, setView, viewMode, setViewMode } = useWorkflow();
+  const { theme, setTheme } = useTheme();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'create', label: 'Create Strategy', icon: PenTool },
+    { id: 'analyzer', label: 'Profile Analyzer', icon: UserSearch },
     { id: 'output', label: 'Output Results', icon: Sparkles },
   ] as const;
 
@@ -34,7 +37,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             return (
               <button
                 key={item.id}
-                onClick={() => setView(item.id)}
+                onClick={() => setView(item.id as any)}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium w-full text-left group hover-elevate",
                   isActive 
@@ -67,26 +70,54 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col relative h-screen overflow-hidden bg-background">
-        {/* Mobile Header */}
-        <header className="h-16 border-b flex items-center justify-between px-4 md:hidden bg-background/80 backdrop-blur-md sticky top-0 z-50">
-          <div className="flex items-center gap-2 text-primary">
+        {/* Responsive Header */}
+        <header className="h-16 border-b flex items-center justify-between px-4 lg:px-8 bg-background/80 backdrop-blur-md sticky top-0 z-50">
+          <div className="flex items-center gap-2 md:hidden text-primary">
             <Zap className="w-5 h-5 fill-primary" />
-            <span className="font-display font-bold text-lg text-foreground">SocialFlow AI</span>
+            <span className="font-display font-bold text-lg text-foreground">SocialFlow</span>
           </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setView('dashboard')}>
-              <LayoutDashboard className="w-5 h-5" />
+          
+          <div className="hidden md:flex items-center gap-2">
+            <h2 className="text-lg font-display font-semibold capitalize">
+              {view === 'dashboard' ? (viewMode === 'client' ? 'Client Dashboard' : 'Dashboard') : view.replace('-', ' ')}
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-2 ml-auto">
+            <div className="bg-muted p-1 rounded-xl flex items-center mr-2">
+              <button 
+                onClick={() => setViewMode('employee')}
+                className={cn("px-3 py-1.5 text-xs font-semibold rounded-lg transition-all", viewMode === 'employee' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+              >
+                Employee
+              </button>
+              <button 
+                onClick={() => setViewMode('client')}
+                className={cn("px-3 py-1.5 text-xs font-semibold rounded-lg transition-all", viewMode === 'client' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+              >
+                Client
+              </button>
+            </div>
+            
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setView('create')}>
-              <PenTool className="w-5 h-5" />
-            </Button>
+
+            <div className="flex gap-2 md:hidden ml-2 border-l border-border pl-2">
+              <Button variant="ghost" size="icon" onClick={() => setView('dashboard')}>
+                <LayoutDashboard className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setView('create')}>
+                <PenTool className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </header>
 
         <div className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
-              key={view}
+              key={view + viewMode}
               initial={{ opacity: 0, y: 10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.98 }}

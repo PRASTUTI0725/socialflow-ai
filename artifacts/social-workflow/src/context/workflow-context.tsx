@@ -2,11 +2,14 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { StrategyInput, StrategyOutput, generateContent } from '../lib/content-generator';
 import { useToast } from '@/hooks/use-toast';
 
-type ViewState = 'dashboard' | 'create' | 'output';
+type ViewState = 'dashboard' | 'create' | 'analyzer' | 'output';
+type ViewMode = 'employee' | 'client';
 
 interface WorkflowContextType {
   view: ViewState;
   setView: (view: ViewState) => void;
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
   strategy: StrategyOutput | null;
   isGenerating: boolean;
   history: StrategyOutput[];
@@ -18,6 +21,7 @@ const WorkflowContext = createContext<WorkflowContextType | undefined>(undefined
 
 export function WorkflowProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<ViewState>('dashboard');
+  const [viewMode, setViewMode] = useState<ViewMode>('employee');
   const [strategy, setStrategy] = useState<StrategyOutput | null>(null);
   const [history, setHistory] = useState<StrategyOutput[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -48,6 +52,8 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
     <WorkflowContext.Provider value={{
       view,
       setView,
+      viewMode,
+      setViewMode,
       strategy,
       isGenerating,
       history,

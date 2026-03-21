@@ -3,7 +3,7 @@ import { useWorkflow } from '@/context/workflow-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Copy, Plus, Calendar, Lightbulb, MessageSquare, Hash, Video, Target } from 'lucide-react';
+import { Copy, Plus, Calendar, Lightbulb, MessageSquare, Hash, Video, Target, ListChecks, Printer } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 
@@ -54,6 +54,33 @@ export function OutputResults() {
     });
   };
 
+  const handleCopyCalendar = () => {
+    let copyText = `📅 30-DAY CONTENT CALENDAR: ${strategy.settings.niche.toUpperCase()} 📅\n\n`;
+    strategy.calendar.forEach((item) => {
+      copyText += `Day ${item.day} | ${item.type} | ${item.format}\nTopic: ${item.idea}\n\n`;
+    });
+    navigator.clipboard.writeText(copyText).then(() => {
+      toast({
+        title: "Calendar Copied",
+        description: "30-day calendar has been copied as text.",
+      });
+    });
+  };
+
+  const handleCopyExecutionGuide = () => {
+    if (!strategy.executionGuide) return;
+    let copyText = `✅ EXECUTION GUIDE: ${strategy.settings.niche.toUpperCase()} ✅\n\n`;
+    strategy.executionGuide.forEach((step) => {
+      copyText += `STEP ${step.step}: ${step.action}\nTool: ${step.tool}\nPrompt:\n${step.prompt}\n\n`;
+    });
+    navigator.clipboard.writeText(copyText).then(() => {
+      toast({
+        title: "Execution Guide Copied",
+        description: "Execution guide and prompts have been copied.",
+      });
+    });
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -90,10 +117,22 @@ export function OutputResults() {
           </div>
         </div>
         
-        <div className="flex shrink-0">
-          <Button onClick={handleCopyAll} variant="outline" className="bg-white hover:bg-gray-50 active-elevate-2 shadow-sm rounded-xl h-12 px-6">
-            <Copy className="w-4 h-4 mr-2" /> Copy Full Strategy
-          </Button>
+        <div className="flex flex-col items-end">
+          <div className="flex flex-wrap shrink-0 gap-2 mb-2">
+            <Button onClick={handleCopyCalendar} variant="outline" className="bg-card hover:bg-accent active-elevate-2 shadow-sm rounded-xl h-10 px-4">
+              <Calendar className="w-4 h-4 mr-2 text-indigo-500" /> Copy Calendar
+            </Button>
+            <Button onClick={handleCopyExecutionGuide} variant="outline" className="bg-card hover:bg-accent active-elevate-2 shadow-sm rounded-xl h-10 px-4">
+              <ListChecks className="w-4 h-4 mr-2 text-green-500" /> Copy Execution
+            </Button>
+            <Button onClick={handleCopyAll} variant="outline" className="bg-card hover:bg-accent active-elevate-2 shadow-sm rounded-xl h-10 px-4">
+              <Copy className="w-4 h-4 mr-2 text-blue-500" /> Copy Strategy
+            </Button>
+            <Button onClick={() => window.print()} variant="default" className="active-elevate-2 shadow-sm rounded-xl h-10 px-4">
+              <Printer className="w-4 h-4 mr-2" /> Export PDF
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">PDF export: opens print dialog, select "Save as PDF"</p>
         </div>
       </div>
 
@@ -223,6 +262,61 @@ export function OutputResults() {
             </Card>
           </motion.div>
         </div>
+
+        {/* Section 3.5: Execution Guide */}
+        {strategy.executionGuide && (
+          <motion.div variants={itemVariants}>
+            <Card className="border-border/50 shadow-sm overflow-hidden">
+              <CardHeader className="bg-muted/30 border-b border-border/50">
+                <CardTitle className="flex items-center gap-2 text-xl font-display">
+                  <ListChecks className="w-5 h-5 text-green-500" /> Execution Guide
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {strategy.executionGuide.map((step, i) => {
+                    let toolColor = "bg-gray-500 text-white";
+                    if (step.tool.includes("ChatGPT")) toolColor = "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20";
+                    else if (step.tool.includes("Perplexity")) toolColor = "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20";
+                    else if (step.tool.includes("Claude")) toolColor = "bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20";
+                    else if (step.tool.includes("Canva")) toolColor = "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20";
+                    else if (step.tool.includes("Buffer") || step.tool.includes("Meta")) toolColor = "bg-teal-500/10 text-teal-700 dark:text-teal-400 border-teal-500/20";
+
+                    return (
+                      <div key={i} className="border border-border/50 rounded-2xl p-5 bg-card relative shadow-sm hover:border-primary/30 transition-colors">
+                        <div className="flex flex-wrap items-center gap-3 mb-4">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                            {step.step}
+                          </div>
+                          <h4 className="font-semibold text-foreground flex-1">{step.action}</h4>
+                          <Badge variant="outline" className={toolColor}>{step.tool}</Badge>
+                        </div>
+                        <div className="relative group">
+                          <textarea 
+                            readOnly 
+                            className="w-full h-28 bg-muted/50 border border-border/50 rounded-xl p-4 text-sm font-mono text-muted-foreground resize-none focus:outline-none focus:ring-1 focus:ring-primary/50"
+                            value={step.prompt}
+                          />
+                          <Button 
+                            size="sm" 
+                            variant="secondary" 
+                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8"
+                            onClick={() => {
+                              navigator.clipboard.writeText(step.prompt);
+                              toast({ description: "Prompt copied to clipboard!" });
+                            }}
+                          >
+                            <Copy className="w-3.5 h-3.5 mr-1" /> Copy Prompt
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
 
         {/* Section 4: 30-Day Calendar */}
         <motion.div variants={itemVariants}>

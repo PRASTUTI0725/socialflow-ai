@@ -16,6 +16,20 @@ export interface CalendarDay {
   format: string;
 }
 
+export interface ExecutionStep {
+  step: number;
+  tool: string;
+  action: string;
+  prompt: string;
+}
+
+export interface ProfileScore {
+  score: number;
+  strengths: string[];
+  weaknesses: string[];
+  suggestions: string[];
+}
+
 export interface StrategyOutput {
   id: string;
   settings: StrategyInput;
@@ -26,6 +40,7 @@ export interface StrategyOutput {
   reels: string[];
   hashtags: Record<string, string[]>;
   calendar: CalendarDay[];
+  executionGuide: ExecutionStep[];
   hiddenAnalysis: {
     problems: string[];
     opportunities: string[];
@@ -136,6 +151,39 @@ export function generateContent(input: StrategyInput): StrategyOutput {
     return { day, type, idea, format };
   });
 
+  const executionGuide: ExecutionStep[] = [
+    { 
+      step: 1, 
+      tool: "ChatGPT", 
+      action: "Expand Content Ideas", 
+      prompt: `I'm creating content for ${input.niche} targeting ${input.targetAudience}. Take these 10 content ideas and expand each into 3 sub-topics with a unique angle:\n${template.ideas.join('\n')}` 
+    },
+    { 
+      step: 2, 
+      tool: "Perplexity AI", 
+      action: "Trend Research", 
+      prompt: `What are the top trending topics and viral content formats in the ${input.niche} space this month? Focus on ${input.platforms.join(', ')}.` 
+    },
+    { 
+      step: 3, 
+      tool: "Claude", 
+      action: "Refine Long-Form Captions", 
+      prompt: `Here are 5 rough caption drafts for ${input.niche} content. Rewrite each to match a ${input.tone} brand voice, add a strong CTA, and optimize for engagement on ${input.platforms.join(', ')}:\n${template.captions.join('\n')}` 
+    },
+    { 
+      step: 4, 
+      tool: "Canva", 
+      action: "Design Visuals", 
+      prompt: `Create carousel post templates (1080x1080px) using brand colors. Suggested designs based on top content ideas from ${input.niche}: ${template.ideas.slice(0,3).join(', ')}` 
+    },
+    { 
+      step: 5, 
+      tool: "Buffer / Meta Suite", 
+      action: "Schedule & Publish", 
+      prompt: `Schedule the following content types according to the 30-day calendar. Best posting times for ${input.platforms[0] || 'social media'}: Morning (8-10am) or Evening (6-8pm) depending on your specific audience insights.` 
+    }
+  ];
+
   return {
     id: Math.random().toString(36).substr(2, 9),
     settings: input,
@@ -146,6 +194,7 @@ export function generateContent(input: StrategyInput): StrategyOutput {
     reels: template.reels,
     hashtags: template.hashtags,
     calendar: calendar,
+    executionGuide: executionGuide,
     hiddenAnalysis: {
       problems: ["Low organic reach in this niche", "High competition for short-form video", "Audience fatigue with standard formats"],
       opportunities: ["Leveraging educational carousels", "Building community via authentic storytelling", "Cross-platform repurposing"]

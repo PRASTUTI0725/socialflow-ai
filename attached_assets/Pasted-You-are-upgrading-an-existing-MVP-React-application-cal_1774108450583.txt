@@ -1,0 +1,233 @@
+You are upgrading an existing MVP React application called "AI Social Media Workflow Assistant".
+
+The current app already:
+
+* Takes input (niche, platform, goal, etc.)
+* Generates structured content output
+* Displays ideas, hooks, captions, hashtags, and 30-day calendar
+
+Now your task is to ENHANCE this into a more realistic, premium internal tool.
+
+DO NOT rebuild from scratch. Extend the current project cleanly.
+
+---
+
+🎯 GOAL OF THIS PHASE:
+
+Make the product feel like:
+
+* A real agency operating system
+* Not just a generator, but a workflow + analytics tool
+
+---
+
+🎨 1. UI/UX IMPROVEMENTS
+
+Upgrade design quality:
+
+* Add proper spacing system (padding, margins consistent)
+* Improve typography hierarchy (headings, subheadings, body text)
+* Add card-based layout for all sections
+* Add hover states and subtle transitions
+* Improve sidebar (active state highlight)
+
+Make it feel closer to:
+
+* Notion
+* Linear
+* Superhuman UI
+
+---
+
+🌗 2. DARK / LIGHT MODE
+
+Add a toggle (top-right corner):
+
+* Light mode (default)
+* Dark mode (professional dark UI, not pure black)
+
+Persist theme using localStorage
+
+---
+
+🧠 3. WORKFLOW GUIDE PANEL (VERY IMPORTANT FEATURE)
+
+Add a NEW section called:
+
+👉 "Execution Guide"
+
+This is your strongest feature.
+
+When a strategy is generated, also generate a step-by-step workflow like:
+
+Step 1:
+"Use ChatGPT to expand content ideas"
+→ Provide a ready-to-copy prompt
+
+Step 2:
+"Use Perplexity for trend research"
+→ Provide what to search
+
+Step 3:
+"Use Claude to refine long-form captions"
+
+Step 4:
+"Use Canva to design visuals"
+→ Suggest what to design
+
+Step 5:
+"Schedule using tools (Meta / Buffer)"
+
+This should:
+
+* Be structured
+* Be actionable
+* Feel like a real SOP (Standard Operating Procedure)
+
+IMPORTANT:
+This replaces tool-switching confusion with clarity.
+
+---
+
+👥 4. USER MODES (SIMULATED LOGIN SYSTEM)
+
+Add a simple toggle (NO real auth):
+
+Top bar switch:
+
+* "Employee View"
+* "Client View"
+
+---
+
+👨‍💻 EMPLOYEE DASHBOARD:
+
+Show:
+
+* Total strategies generated
+* Total clients handled
+* Estimated hours saved
+* Recent activity
+
+Add charts (use simple chart library or mock charts):
+
+* Client growth overview
+* Content performance trends
+
+---
+
+👤 CLIENT DASHBOARD:
+
+Show:
+
+* Their selected niche & strategy summary
+* Growth metrics (fake but realistic):
+
+  * Followers growth
+  * Engagement rate
+  * Reach
+
+Display:
+
+* Before vs After comparison (progress cards)
+* Weekly growth chart
+
+---
+
+📊 5. PROFILE ANALYZER (SIMULATED)
+
+Add a new section:
+
+👉 "Profile Analyzer"
+
+Input options:
+
+* Username (text)
+* Bio (textarea)
+* Sample post (textarea)
+
+Output:
+
+* Score (out of 100)
+* Strengths (3 points)
+* Weaknesses (3 points)
+* Improvement suggestions
+
+IMPORTANT:
+Use predefined logic based on niche keywords
+DO NOT fetch real data
+
+Make it feel intelligent.
+
+---
+
+🛠️ 6. IMPROVE EXISTING OUTPUT SECTION
+
+Refactor current output:
+
+Group properly:
+
+* Strategy Summary (NEW)
+* Weakness Analysis (KEEP hidden)
+* Content Engine (ideas, hooks, captions)
+* Calendar
+
+Add:
+
+* Section titles
+* Dividers
+* Better readability
+
+---
+
+📋 7. "COPY + EXPORT" FEATURES
+
+Add buttons:
+
+* Copy Strategy
+* Copy Calendar
+* Copy Execution Guide
+
+Optional:
+
+* "Export as PDF" (basic browser print styling)
+
+---
+
+⚙️ 8. CODE QUALITY
+
+* Use reusable components
+* Keep logic modular
+* Avoid duplication
+* Maintain clean folder structure
+
+---
+
+🚫 DO NOT:
+
+* Add backend
+* Add real API calls
+* Add complex authentication
+* Over-engineer
+
+---
+
+💡 FINAL RESULT SHOULD FEEL LIKE:
+
+An internal agency tool where:
+
+* Team creates strategy
+* Gets execution steps
+* Tracks performance
+* Analyzes client profiles
+
+Not just a content generator.
+
+---
+
+DELIVER:
+
+* Updated React app
+* Clean UI improvements
+* New sections integrated smoothly
+* Everything working inside same app

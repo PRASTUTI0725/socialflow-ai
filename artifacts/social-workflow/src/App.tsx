@@ -7,6 +7,8 @@ import { Layout } from "./components/layout";
 import { Dashboard } from "./pages/dashboard";
 import { CreateStrategy } from "./pages/create-strategy";
 import { OutputResults } from "./pages/output-results";
+import { ProfileAnalyzer } from "./pages/profile-analyzer";
+import { ThemeProvider } from "./components/theme-provider";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +20,7 @@ function MainApp() {
     <Layout>
       {view === 'dashboard' && <Dashboard />}
       {view === 'create' && <CreateStrategy />}
+      {view === 'analyzer' && <ProfileAnalyzer />}
       {view === 'output' && <OutputResults />}
     </Layout>
   );
@@ -39,16 +42,18 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WorkflowProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-          <Toaster />
-        </WorkflowProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="system" storageKey="theme">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <WorkflowProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+            <Toaster />
+          </WorkflowProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
