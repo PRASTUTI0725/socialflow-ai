@@ -1,0 +1,111 @@
+You are refactoring the AI generation layer of SocialFlow AI 
+(React + TypeScript, Gemini 1.5 Flash integration already exists).
+
+DO NOT add any new features, pages, or UI components.
+DO NOT change any visual styling or layout.
+ONLY modify:
+- src/lib/ai-client.ts
+- src/lib/brand-memory.ts
+
+---
+
+TASK: Build a Brand Voice Synthesis layer and restructure all 
+generation prompts for maximum output quality.
+
+---
+
+PART 1 — Brand Voice Synthesizer
+
+In src/lib/brand-memory.ts, add a new exported function:
+
+synthesizeBrandPersona(profile: BrandProfile): string
+
+This function takes a brand profile and returns a single, 
+coherent system persona string. It must:
+
+1. Open with a role statement:
+   "You are writing content for [Brand Name], a [niche] brand."
+
+2. Build a personality paragraph from tone + writing style fields:
+   Do not list them — convert them into a natural description of 
+   how this brand thinks and communicates.
+
+3. Add an explicit vocabulary blacklist from the Don'ts field:
+   "Never use these words or phrases: [list]"
+   "Never write in this style: [inferred from don'ts]"
+
+4. Add an affirmative style guide from the Do's field:
+   "Always: [specific behaviors derived from do's]"
+
+5. If pastContent is provided, add:
+   "Match the register and energy of these examples: [pastContent excerpt]"
+
+6. Close with audience framing:
+   "The reader is [targetAudience]. Write as if you know them personally. Do not explain."
+
+Return a single string.
+
+---
+
+PART 2 — Restructure Generation Prompts
+
+In src/lib/ai-client.ts, restructure ALL generation calls:
+
+SYSTEM PROMPT (order matters):
+1. Brand persona block (use synthesizeBrandPersona if profile exists)
+2. Output format specification (strict JSON structure)
+3. Quality constraints
+
+USER PROMPT:
+1. Task input only (niche, platform, goal)
+2. "Return only valid JSON. No explanation, no markdown."
+
+---
+
+QUALITY CONSTRAINTS:
+
+HOOKS:
+- Must use: bold claim / counterintuitive / number / challenge / story
+- No questions starting with helping verbs
+- Must reference niche
+
+CAPTIONS:
+- First line = hook
+- Exactly one CTA
+- Max 2 sentences per paragraph
+- No em-dashes
+- Avoid words: "game-changer", "elevate", "unlock", "dive into", "in today's world"
+
+VIDEO IDEAS:
+- Include: hook (first 3 sec), tension, resolution, CTA
+- Must be shootable on phone
+
+HASHTAGS:
+- Broad: 3
+- Niche: 5
+- Brand: 2
+- Return as JSON object
+
+---
+
+PART 3 — JSON HANDLING
+
+1. Remove ```json and ``` before parsing
+2. If JSON.parse fails:
+   - Extract using regex: /\{[\s\S]*\}/ or /\[[\s\S]*\]/
+3. If still fails:
+   Throw error:
+   "Model returned malformed JSON. Try regenerating."
+4. DO NOT fallback to templates silently
+
+---
+
+VERIFICATION:
+
+- synthesizeBrandPersona exists and is used
+- All generation calls follow new structure
+- JSON parsing is robust
+- No UI changes
+- No extra files created
+
+Execute completely. Do not explain.
