@@ -1,0 +1,178 @@
+You are upgrading an existing project: SocialFlow AI (React + TypeScript + Vite, Tailwind, shadcn/ui).
+
+IMPORTANT:
+- Do NOT break existing UI or structure
+- Improve depth, not just add random features
+- Keep everything clean, modular, and production-like
+
+-----------------------------------
+PART 1: REAL AI INTEGRATION (Gemini)
+-----------------------------------
+
+Replace all simulated content generation with REAL AI using Google Gemini API (free tier).
+
+Steps:
+
+1. Install Gemini SDK (use fetch if SDK not available)
+
+2. Create file:
+src/lib/ai-client.ts
+
+3. Create function:
+generateStrategy(input, brandProfile)
+
+4. Use Gemini API:
+- Model: gemini-1.5-flash (fast + free)
+- Use API key from localStorage: "gemini_api_key"
+
+5. Prompt structure:
+
+SYSTEM CONTEXT:
+Include brand profile if active:
+- Brand Name
+- Niche
+- Target Audience
+- Tone
+- Writing Style
+- Do’s / Don’ts
+- Keywords
+
+USER INPUT:
+- Platforms
+- Goal
+- Content type
+
+6. Return structured JSON EXACTLY like current StrategyOutput:
+- hooks[]
+- captions[]
+- ideas[]
+- calendar[]
+- hashtags{}
+
+7. Add API Key input field in Create Strategy page:
+- Save to localStorage
+- Label clearly: “Gemini API Key”
+
+8. Replace all fake generation logic with this real function
+
+9. Add proper loading + error handling
+
+-----------------------------------
+PART 2: BRAND INTELLIGENCE UPGRADE
+-----------------------------------
+
+Upgrade "Client Brain" into a smart "Brand Intelligence Layer"
+
+Add:
+
+1. Voice Summary Section:
+Auto-generate structured summary from profile:
+- Tone Style
+- Sentence Pattern
+- Emotional Style
+- CTA Behavior
+
+2. Content Breakdown:
+When past content is added:
+Simulate analysis and show:
+- Hook Type (question/story/stat)
+- Tone type
+- Structure type
+
+Display as cards
+
+3. Brand Score (Simulated but logical):
+Score out of 100 based on:
+- Consistency
+- Clarity
+- Engagement potential
+
+4. UI:
+Make it look analytical (dashboard style, not just forms)
+
+-----------------------------------
+PART 3: GENERATION EXPERIENCE
+-----------------------------------
+
+Improve UX to feel intelligent:
+
+Add loading steps:
+- “Analyzing brand voice…”
+- “Understanding audience psychology…”
+- “Generating platform-specific strategy…”
+
+Show progress UI before results
+
+-----------------------------------
+PART 4: TRUST FIX (IMPORTANT)
+-----------------------------------
+
+Fix fake dashboard problem:
+
+- Add label: “Demo Data – Replace with real metrics”
+- Remove misleading animations
+- Add empty state:
+  “No real performance data connected yet”
+
+-----------------------------------
+PART 5: STRATEGY PERSISTENCE
+-----------------------------------
+
+Fix critical issue:
+
+- Save generated strategies to localStorage
+- Load on app start
+- Keep last 20 strategies
+- Each strategy must have:
+  - id (uuid)
+  - generatedAt
+  - inputSummary
+
+-----------------------------------
+PART 6: PROJECT DOCUMENTATION (VERY IMPORTANT)
+-----------------------------------
+
+Update / recreate file:
+
+project_overview.md
+
+Include:
+
+1. Updated App Overview
+2. ALL Features (clearly separated):
+   - Core Features
+   - AI Features
+   - Brand Intelligence Features
+   - Dashboard Features
+
+3. AI Integration Details:
+   - Gemini usage
+   - Prompt structure
+   - Data flow
+
+4. UI Structure (tree format)
+
+5. User Workflow (step-by-step)
+
+6. Tech Stack Table
+
+7. State Management
+
+8. Real vs Simulated Features (VERY CLEAR)
+
+9. Future Improvements
+
+10. Architecture Explanation:
+   - Brand Layer
+   - AI Layer
+   - UI Layer
+
+Make this documentation CLEAN, professional, and readable.
+
+-----------------------------------
+
+FINAL GOAL:
+This should feel like a REAL SaaS MVP, not a demo.
+
+Do NOT add unnecessary features.
+Focus on depth, intelligence, and usability.
