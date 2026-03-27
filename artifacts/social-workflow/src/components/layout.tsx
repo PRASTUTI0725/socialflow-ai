@@ -2,20 +2,29 @@ import React from 'react';
 import { useWorkflow } from '@/context/workflow-context';
 import { useTheme } from '@/components/theme-provider';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, PenTool, Sparkles, LogOut, ChevronRight, Zap, UserSearch, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, PenTool, Sparkles, ChevronRight, Zap, UserSearch, Moon, Sun, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { view, setView, viewMode, setViewMode } = useWorkflow();
+  const { view, setView, viewMode, setViewMode, activeProfile } = useWorkflow();
   const { theme, setTheme } = useTheme();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'create', label: 'Create Strategy', icon: PenTool },
     { id: 'analyzer', label: 'Profile Analyzer', icon: UserSearch },
+    { id: 'brand-profile', label: 'Client Brain', icon: Brain },
     { id: 'output', label: 'Output Results', icon: Sparkles },
   ] as const;
+
+  const viewLabel: Record<string, string> = {
+    dashboard: viewMode === 'client' ? 'Client Dashboard' : 'Dashboard',
+    create: 'Create Strategy',
+    analyzer: 'Profile Analyzer',
+    'brand-profile': 'Client Brain',
+    output: 'Output Results',
+  };
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden font-sans">
@@ -27,7 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <span className="font-display font-bold text-lg text-foreground tracking-tight">SocialFlow AI</span>
           </div>
         </div>
-        
+
         <div className="flex-1 py-6 px-3 flex flex-col gap-1">
           <div className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider mb-2 px-3">
             Main Menu
@@ -40,19 +49,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 onClick={() => setView(item.id as any)}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium w-full text-left group hover-elevate",
-                  isActive 
-                    ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20" 
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                     : "text-sidebar-foreground hover:bg-sidebar-accent"
                 )}
               >
                 <item.icon className={cn("w-4 h-4", isActive ? "text-primary-foreground" : "text-sidebar-foreground/70 group-hover:text-foreground")} />
                 {item.label}
+                {item.id === 'brand-profile' && activeProfile && !isActive && (
+                  <span className="ml-auto w-2 h-2 rounded-full bg-green-500" title={`Active: ${activeProfile.brandName}`} />
+                )}
                 {isActive && (
                   <ChevronRight className="w-4 h-4 ml-auto opacity-70" />
                 )}
               </button>
             );
           })}
+
+          {activeProfile && (
+            <div className="mt-4 mx-2 px-3 py-2.5 rounded-xl bg-primary/5 border border-primary/15">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Active Profile</p>
+              <p className="text-sm font-semibold text-foreground truncate">{activeProfile.brandName}</p>
+              <p className="text-xs text-muted-foreground truncate">{activeProfile.niche}</p>
+            </div>
+          )}
         </div>
 
         <div className="p-4 border-t border-sidebar-border/50">
@@ -76,29 +96,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Zap className="w-5 h-5 fill-primary" />
             <span className="font-display font-bold text-lg text-foreground">SocialFlow</span>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-2">
             <h2 className="text-lg font-display font-semibold capitalize">
-              {view === 'dashboard' ? (viewMode === 'client' ? 'Client Dashboard' : 'Dashboard') : view.replace('-', ' ')}
+              {viewLabel[view] || view}
             </h2>
           </div>
 
           <div className="flex items-center gap-2 ml-auto">
             <div className="bg-muted p-1 rounded-xl flex items-center mr-2">
-              <button 
+              <button
                 onClick={() => setViewMode('employee')}
                 className={cn("px-3 py-1.5 text-xs font-semibold rounded-lg transition-all", viewMode === 'employee' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
               >
                 Employee
               </button>
-              <button 
+              <button
                 onClick={() => setViewMode('client')}
                 className={cn("px-3 py-1.5 text-xs font-semibold rounded-lg transition-all", viewMode === 'client' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
               >
                 Client
               </button>
             </div>
-            
+
             <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>

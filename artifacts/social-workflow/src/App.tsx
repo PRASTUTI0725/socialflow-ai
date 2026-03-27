@@ -8,11 +8,11 @@ import { Dashboard } from "./pages/dashboard";
 import { CreateStrategy } from "./pages/create-strategy";
 import { OutputResults } from "./pages/output-results";
 import { ProfileAnalyzer } from "./pages/profile-analyzer";
+import { BrandProfilePage } from "./pages/brand-profile";
 import { ThemeProvider } from "./components/theme-provider";
 
 const queryClient = new QueryClient();
 
-// View orchestrator since we use view state instead of full routing for the internal tool
 function MainApp() {
   const { view } = useWorkflow();
 
@@ -21,6 +21,7 @@ function MainApp() {
       {view === 'dashboard' && <Dashboard />}
       {view === 'create' && <CreateStrategy />}
       {view === 'analyzer' && <ProfileAnalyzer />}
+      {view === 'brand-profile' && <BrandProfilePage />}
       {view === 'output' && <OutputResults />}
     </Layout>
   );
@@ -33,7 +34,6 @@ function Router() {
         <MainApp />
       </Route>
       <Route>
-        {/* Fallback for 404 just renders the app shell with dashboard */}
         <MainApp />
       </Route>
     </Switch>

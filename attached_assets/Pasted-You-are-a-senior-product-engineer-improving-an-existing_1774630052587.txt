@@ -1,0 +1,118 @@
+You are a senior product engineer improving an existing React + Tailwind MVP.
+
+The current app is an AI Social Media Workflow Assistant with:
+- Strategy generator
+- Content ideas
+- Hooks, captions, reels, hashtags
+- Calendar and execution guide
+
+Your task is to UPGRADE this into a more realistic SaaS tool by adding a "Brand Memory System" and improving content intelligence.
+
+---
+
+🧠 CORE FEATURE TO ADD: BRAND MEMORY SYSTEM
+
+Create a new section called:
+
+👉 "Client Brain" or "Brand Profile"
+
+This should include a form with fields:
+
+- Brand Name
+- Niche
+- Target Audience
+- Brand Tone (dropdown + custom)
+- Writing Style (short / storytelling / punchy / educational)
+- Do's (bullet inputs)
+- Don'ts (bullet inputs)
+- Past High-Performing Content (textarea)
+- Keywords / Content Themes
+
+Add:
+- Save Profile button
+- Ability to switch between saved profiles (use local state, no backend)
+
+---
+
+⚙️ UPDATE EXISTING GENERATION LOGIC
+
+Modify the content generation logic so that:
+
+- Output is influenced by selected Brand Profile
+- Content tone, wording, and style reflect stored inputs
+
+Simulate this using conditional logic and structured templates.
+
+---
+
+🔁 ADD CONTENT REPURPOSING FEATURE
+
+Create a section:
+
+👉 "Repurpose Idea"
+
+Input:
+- One content idea
+
+Output:
+- LinkedIn post
+- Instagram caption
+- Twitter thread
+
+Make outputs platform-specific in tone and formatting.
+
+---
+
+📊 ADD "BEFORE vs AFTER" COMPARISON
+
+When generating content:
+
+Show two outputs:
+1. Generic AI Output
+2. Brand-Aware Output
+
+Visually separate them in cards.
+
+---
+
+🎨 UI/UX IMPROVEMENTS
+
+- Keep clean SaaS look (Notion / Linear style)
+- Use cards, spacing, and hierarchy
+- Make Brand Profile feel like a real client dashboard
+- Add small icons and section dividers
+
+---
+
+📁 DOCUMENTATION FILE (IMPORTANT)
+
+Create a file:
+
+👉 project_overview.md
+
+Include:
+
+1. App overview
+2. Features list (clearly structured)
+3. UI structure (pages, sections, components)
+4. Workflow (how user goes from input → output)
+5. Tech stack used
+6. State management approach
+7. Which parts are simulated vs real
+8. Future improvements (automation, APIs, backend)
+
+Make it clean, readable, and professional.
+
+---
+
+🎯 GOAL
+
+This should feel like:
+- A real internal tool for a social media agency
+- Not a student project
+- Focus on clarity, structure, and realism
+
+Do not add backend or APIs.
+Do not overcomplicate.
+
+Just make the experience smarter and more product-like.

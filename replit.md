@@ -50,6 +50,16 @@ Every package extends `tsconfig.base.json` which sets `composite: true`. The roo
 
 ## Packages
 
+### `artifacts/social-workflow` (`@workspace/social-workflow`)
+
+Frontend-only React + Vite + TypeScript SaaS tool for social media agencies. No backend — all state via React Context and localStorage.
+
+- **Stack**: React 18, Vite, Tailwind CSS, shadcn/ui, Framer Motion, Wouter, react-hook-form + Zod
+- **Pages**: Dashboard (Employee/Client modes), Create Strategy, Profile Analyzer, Client Brain (brand profiles), Output Results
+- **Key libs**: `src/lib/content-generator.ts` (strategy generation), `src/lib/brand-memory.ts` (brand profiles + repurposing)
+- **State**: WorkflowProvider context — view, viewMode, strategy, history, activeProfile, profiles
+- **Features**: 30-day content calendar, viral hooks, captions with Before/After comparison, content repurposing (LinkedIn/Instagram/Twitter), dark/light mode
+
 ### `artifacts/api-server` (`@workspace/api-server`)
 
 Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` for request and response validation and `@workspace/db` for persistence.

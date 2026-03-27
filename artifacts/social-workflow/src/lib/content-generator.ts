@@ -1,3 +1,5 @@
+import { BrandProfile, applyBrandVoice, applyBrandHook } from './brand-memory';
+
 export interface StrategyInput {
   niche: string;
   customNiche?: string;
@@ -37,10 +39,13 @@ export interface StrategyOutput {
   ideas: string[];
   hooks: string[];
   captions: string[];
+  brandAwareCaptions: string[];
+  brandAwareHooks: string[];
   reels: string[];
   hashtags: Record<string, string[]>;
   calendar: CalendarDay[];
   executionGuide: ExecutionStep[];
+  brandProfileUsed: string | null;
   hiddenAnalysis: {
     problems: string[];
     opportunities: string[];
@@ -50,8 +55,8 @@ export interface StrategyOutput {
 const NICHE_TEMPLATES: Record<string, any> = {
   "Fitness": {
     ideas: [
-      "5-minute home mobility routine", "Grocery haul for bulking season", "Transformation before & after story", 
-      "Biggest myth about protein powders", "Form check: How to properly deadlift", "What I eat in a day (realistic)", 
+      "5-minute home mobility routine", "Grocery haul for bulking season", "Transformation before & after story",
+      "Biggest myth about protein powders", "Form check: How to properly deadlift", "What I eat in a day (realistic)",
       "Gym bag essentials 2025", "Overcoming gym anxiety as a beginner", "3 stretches for lower back pain", "Why you're not seeing progress"
     ],
     hooks: [
@@ -129,20 +134,20 @@ const GENERIC_TEMPLATE = {
   }
 };
 
-export function generateContent(input: StrategyInput): StrategyOutput {
+export function generateContent(input: StrategyInput, brandProfile?: BrandProfile | null): StrategyOutput {
   const template = NICHE_TEMPLATES[input.niche] || GENERIC_TEMPLATE;
-  
+
   // Generate 30-day calendar
-  const contentTypes = input.contentFocus === 'Reels' ? ['Reel'] : 
-                       input.contentFocus === 'Posts' ? ['Carousel', 'Single Post'] : 
-                       ['Reel', 'Carousel', 'Single Post', 'Story'];
-                       
+  const contentTypes = input.contentFocus === 'Reels' ? ['Reel'] :
+    input.contentFocus === 'Posts' ? ['Carousel', 'Single Post'] :
+      ['Reel', 'Carousel', 'Single Post', 'Story'];
+
   const calendar: CalendarDay[] = Array.from({ length: 30 }).map((_, i) => {
     const day = i + 1;
     const type = contentTypes[Math.floor(Math.random() * contentTypes.length)];
     const ideaPool = template.ideas;
     const idea = ideaPool[day % ideaPool.length];
-    
+
     let format = "Educational";
     if (day % 7 === 0) format = "Personal/Behind the Scenes";
     if (day % 5 === 0) format = "Promotional";
@@ -152,37 +157,59 @@ export function generateContent(input: StrategyInput): StrategyOutput {
   });
 
   const executionGuide: ExecutionStep[] = [
-    { 
-      step: 1, 
-      tool: "ChatGPT", 
-      action: "Expand Content Ideas", 
-      prompt: `I'm creating content for ${input.niche} targeting ${input.targetAudience}. Take these 10 content ideas and expand each into 3 sub-topics with a unique angle:\n${template.ideas.join('\n')}` 
+    {
+      step: 1,
+      tool: "ChatGPT",
+      action: "Expand Content Ideas",
+      prompt: `I'm creating content for ${input.niche} targeting ${input.targetAudience}. Take these 10 content ideas and expand each into 3 sub-topics with a unique angle:\n${template.ideas.join('\n')}`
     },
-    { 
-      step: 2, 
-      tool: "Perplexity AI", 
-      action: "Trend Research", 
-      prompt: `What are the top trending topics and viral content formats in the ${input.niche} space this month? Focus on ${input.platforms.join(', ')}.` 
+    {
+      step: 2,
+      tool: "Perplexity AI",
+      action: "Trend Research",
+      prompt: `What are the top trending topics and viral content formats in the ${input.niche} space this month? Focus on ${input.platforms.join(', ')}.`
     },
-    { 
-      step: 3, 
-      tool: "Claude", 
-      action: "Refine Long-Form Captions", 
-      prompt: `Here are 5 rough caption drafts for ${input.niche} content. Rewrite each to match a ${input.tone} brand voice, add a strong CTA, and optimize for engagement on ${input.platforms.join(', ')}:\n${template.captions.join('\n')}` 
+    {
+      step: 3,
+      tool: "Claude",
+      action: "Refine Long-Form Captions",
+      prompt: `Here are 5 rough caption drafts for ${input.niche} content. Rewrite each to match a ${input.tone} brand voice, add a strong CTA, and optimize for engagement on ${input.platforms.join(', ')}:\n${template.captions.join('\n')}`
     },
-    { 
-      step: 4, 
-      tool: "Canva", 
-      action: "Design Visuals", 
-      prompt: `Create carousel post templates (1080x1080px) using brand colors. Suggested designs based on top content ideas from ${input.niche}: ${template.ideas.slice(0,3).join(', ')}` 
+    {
+      step: 4,
+      tool: "Canva",
+      action: "Design Visuals",
+      prompt: `Create carousel post templates (1080x1080px) using brand colors. Suggested designs based on top content ideas from ${input.niche}: ${template.ideas.slice(0, 3).join(', ')}`
     },
-    { 
-      step: 5, 
-      tool: "Buffer / Meta Suite", 
-      action: "Schedule & Publish", 
-      prompt: `Schedule the following content types according to the 30-day calendar. Best posting times for ${input.platforms[0] || 'social media'}: Morning (8-10am) or Evening (6-8pm) depending on your specific audience insights.` 
+    {
+      step: 5,
+      tool: "Buffer / Meta Suite",
+      action: "Schedule & Publish",
+      prompt: `Schedule the following content types according to the 30-day calendar. Best posting times for ${input.platforms[0] || 'social media'}: Morning (8-10am) or Evening (6-8pm) depending on your specific audience insights.`
     }
   ];
+
+  // Brand-aware outputs — apply brand voice transformations if a profile is active
+  const brandAwareCaptions = brandProfile
+    ? template.captions.map((c: string) => applyBrandVoice(c, brandProfile))
+    : template.captions.map((c: string) => applyBrandVoice(c, {
+        id: 'default',
+        brandName: '',
+        niche: input.niche,
+        targetAudience: input.targetAudience,
+        tone: input.tone,
+        writingStyle: 'educational',
+        dos: [],
+        donts: [],
+        pastContent: '',
+        keywords: [],
+        themes: [],
+        createdAt: new Date().toISOString(),
+      }));
+
+  const brandAwareHooks = brandProfile
+    ? template.hooks.map((h: string) => applyBrandHook(h, brandProfile))
+    : template.hooks;
 
   return {
     id: Math.random().toString(36).substr(2, 9),
@@ -191,10 +218,13 @@ export function generateContent(input: StrategyInput): StrategyOutput {
     ideas: template.ideas,
     hooks: template.hooks,
     captions: template.captions,
+    brandAwareCaptions,
+    brandAwareHooks,
     reels: template.reels,
     hashtags: template.hashtags,
-    calendar: calendar,
-    executionGuide: executionGuide,
+    calendar,
+    executionGuide,
+    brandProfileUsed: brandProfile?.id ?? null,
     hiddenAnalysis: {
       problems: ["Low organic reach in this niche", "High competition for short-form video", "Audience fatigue with standard formats"],
       opportunities: ["Leveraging educational carousels", "Building community via authentic storytelling", "Cross-platform repurposing"]
