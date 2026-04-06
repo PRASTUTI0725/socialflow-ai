@@ -1,4 +1,6 @@
+import { generateId } from '@/lib/utils';
 import { BrandProfile, applyBrandVoice, applyBrandHook } from './brand-memory';
+import type { SectionName } from './ai-client';
 
 export interface StrategyInput {
   niche: string;
@@ -45,10 +47,17 @@ export interface StrategyOutput {
   hashtags: Record<string, string[]>;
   calendar: CalendarDay[];
   executionGuide: ExecutionStep[];
-  brandProfileUsed: string | null;
+  clientId: string | null; // CRITICAL: Direct client binding - NO inference needed
+  brandProfileUsed: string | null; // Kept for backward compatibility only
   hiddenAnalysis: {
     problems: string[];
     opportunities: string[];
+  };
+  approvedPool?: {
+    ideas: string[];
+    hooks: string[];
+    captions: string[];
+    reels: string[];
   };
 }
 
@@ -134,17 +143,63 @@ const GENERIC_TEMPLATE = {
   }
 };
 
-export function generateContent(input: StrategyInput, brandProfile?: BrandProfile | null): StrategyOutput {
-  const template = NICHE_TEMPLATES[input.niche] || GENERIC_TEMPLATE;
+// Deterministic hash: converts a string to a numeric seed
+function hashSeed(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash);
+}
 
-  // Generate 30-day calendar
+// Deterministic pseudo-random from seed — returns [0, 1)
+function seededRandom(seed: number): () => number {
+  let s = seed;
+  return () => {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+export function generateContent(input: StrategyInput, brandProfile?: BrandProfile | null): StrategyOutput {
+  const isFitness = input.niche.toLowerCase().includes('fit') || input.niche.toLowerCase().includes('gym');
+  const isTech = input.niche.toLowerCase().includes('tech') || input.niche.toLowerCase().includes('code');
+  const isLuxury = input.niche.toLowerCase().includes('lux') || input.tone.toLowerCase().includes('premium') || input.niche.toLowerCase().includes('dubai');
+
+  let baseTemplate = GENERIC_TEMPLATE;
+  if (isFitness) baseTemplate = NICHE_TEMPLATES["Fitness"];
+  else if (isTech) baseTemplate = NICHE_TEMPLATES["Tech"];
+
+  const nicheSafe = input.niche ? input.niche : "our industry";
+
+  const customTemplate = {
+    ideas: baseTemplate.ideas.map((id: string) => {
+      return isLuxury ? `Premium ${id}` : id;
+    }),
+    hooks: baseTemplate.hooks.map((hook: string) => {
+      let newHook = hook.replace(/this industry/gi, nicheSafe).replace(/this EXACT reason/gi, `they don't understand ${nicheSafe}`);
+      return newHook;
+    }),
+    captions: baseTemplate.captions,
+    reels: baseTemplate.reels,
+    hashtags: baseTemplate.hashtags
+  };
+
+  const template = customTemplate;
+
+  // Deterministic calendar — same input always produces same output
   const contentTypes = input.contentFocus === 'Reels' ? ['Reel'] :
     input.contentFocus === 'Posts' ? ['Carousel', 'Single Post'] :
       ['Reel', 'Carousel', 'Single Post', 'Story'];
 
+  const calendarSeed = hashSeed(`${input.niche}|${input.goal}|${input.contentFocus}|${input.platforms.join(',')}`);
+  const rng = seededRandom(calendarSeed);
+
   const calendar: CalendarDay[] = Array.from({ length: 30 }).map((_, i) => {
     const day = i + 1;
-    const type = contentTypes[Math.floor(Math.random() * contentTypes.length)];
+    const type = contentTypes[Math.floor(rng() * contentTypes.length)];
     const ideaPool = template.ideas;
     const idea = ideaPool[day % ideaPool.length];
 
@@ -212,7 +267,7 @@ export function generateContent(input: StrategyInput, brandProfile?: BrandProfil
     : template.hooks;
 
   return {
-    id: Math.random().toString(36).substr(2, 9),
+    id: generateId(),
     settings: input,
     createdAt: new Date(),
     ideas: template.ideas,
@@ -224,10 +279,42 @@ export function generateContent(input: StrategyInput, brandProfile?: BrandProfil
     hashtags: template.hashtags,
     calendar,
     executionGuide,
+    clientId: null, // Will be set by workflow-context at generation time
     brandProfileUsed: brandProfile?.id ?? null,
     hiddenAnalysis: {
       problems: ["Low organic reach in this niche", "High competition for short-form video", "Audience fatigue with standard formats"],
       opportunities: ["Leveraging educational carousels", "Building community via authentic storytelling", "Cross-platform repurposing"]
     }
   };
+}
+
+export function generateSectionContent(
+  section: SectionName,
+  input: StrategyInput,
+  brandProfile?: BrandProfile | null
+): Partial<StrategyOutput> {
+  const full = generateContent(input, brandProfile);
+  const result: Partial<StrategyOutput> = {};
+
+  switch (section) {
+    case 'ideas':
+      result.ideas = full.ideas;
+      break;
+    case 'hooks':
+      result.hooks = full.hooks;
+      result.brandAwareHooks = full.brandAwareHooks;
+      break;
+    case 'captions':
+      result.captions = full.captions;
+      result.brandAwareCaptions = full.brandAwareCaptions;
+      break;
+    case 'reels':
+      result.reels = full.reels;
+      break;
+    case 'calendar':
+      result.calendar = full.calendar;
+      break;
+  }
+
+  return result;
 }

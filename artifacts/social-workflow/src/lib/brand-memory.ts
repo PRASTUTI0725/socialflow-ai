@@ -118,48 +118,39 @@ function describeTone(tone: string, customTone?: string): string {
 export function synthesizeBrandPersona(profile: BrandProfile): string {
   const lines: string[] = [];
 
-  // 1. Role statement
-  const nicheClause = profile.niche ? `, a ${profile.niche} brand` : '';
-  lines.push(`You are writing content for ${profile.brandName}${nicheClause}.`);
+  lines.push(`You are not an AI assistant generating content. You are the voice of ${profile.brandName || 'this brand'}. You have a specific worldview, a specific reader you are talking to, and a specific way you never communicate.`);
   lines.push('');
 
-  // 2. Personality paragraph — natural prose, not a list
-  const toneDesc = describeTone(profile.tone, profile.customTone);
-  const styleDesc = describeWritingStyle(profile.writingStyle);
-  lines.push(
-    `This brand's voice is ${toneDesc} Its writing style is ${styleDesc}` +
-    (profile.keywords.length > 0
-      ? ` It gravitates toward themes of ${profile.keywords.join(', ')}.`
-      : '')
-  );
-  lines.push('');
+  let target = profile.targetAudience || 'my audience';
+  lines.push(`My reader is ${target}. I assume they are informed. I do not explain basics to them.`);
+  
+  let toneBehavior = "I communicate like a person, not a brand. Specific over general. Direct over diplomatic.";
+  const toneLower = profile.tone.toLowerCase();
+  
+  if (toneLower.includes("witty")) {
+    toneBehavior = "I make the point and then undercut it slightly — the joke is in the gap, not the punchline.";
+  } else if (toneLower.includes("professional")) {
+    toneBehavior = "I lead with the insight, then the evidence. Never the reverse.";
+  } else if (toneLower.includes("casual")) {
+    toneBehavior = "I write like I'm texting someone smart. No performance, no structure theater.";
+  } else if (toneLower.includes("authoritative")) {
+    toneBehavior = "I state positions. I do not hedge. The reader can disagree but I will not apologize for having a view.";
+  }
 
-  // 3. Vocabulary blacklist from Don'ts
+  lines.push(`My tone is ${profile.tone}. In practice this means: ${toneBehavior}`);
+  
+  if (profile.keywords && profile.keywords.length > 0) {
+    lines.push(`I gravitate toward themes of ${profile.keywords.join(', ')}.`);
+  }
+
   const donts = profile.donts.filter(Boolean);
   if (donts.length > 0) {
-    lines.push(`Never use these phrases or approaches: ${donts.join('; ')}.`);
-    lines.push('Never write in a way that contradicts these constraints.');
-    lines.push('');
+    lines.push(`I never sound like: a generic marketer who relies on concepts like ${donts.join(', ')}.`);
   }
 
-  // 4. Affirmative style guide from Do's
-  const dos = profile.dos.filter(Boolean);
-  if (dos.length > 0) {
-    lines.push(`Always follow these content behaviours: ${dos.join('; ')}.`);
-    lines.push('');
-  }
-
-  // 5. Past content calibration (first 600 chars to stay within prompt budget)
-  if (profile.pastContent.trim().length > 10) {
+  if (profile.pastContent && profile.pastContent.trim().length > 10) {
     const excerpt = profile.pastContent.trim().slice(0, 600);
-    lines.push(`Match the register and energy of these high-performing examples from this brand:`);
-    lines.push(excerpt);
-    lines.push('');
-  }
-
-  // 6. Audience framing
-  if (profile.targetAudience) {
-    lines.push(`The reader is ${profile.targetAudience}. Write as if you know them personally. Do not explain.`);
+    lines.push(`My proven content voice sounds like this: ${excerpt}. Match this register.`);
   }
 
   return lines.join('\n');

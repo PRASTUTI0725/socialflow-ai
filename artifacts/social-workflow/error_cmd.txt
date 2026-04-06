@@ -1,0 +1,17 @@
+
+> @workspace/social-workflow@0.0.0 dev C:\Users\prateek\Downloads\SOCIALIDIOTS\Attached-Assets\artifacts\social-workflow
+> vite --config vite.config.ts --host 0.0.0.0
+
+[31mfailed to load config from C:\Users\prateek\Downloads\SOCIALIDIOTS\Attached-Assets\artifacts\social-workflow\vite.config.ts[39m
+[31merror when starting dev server:
+Error: PORT environment variable is required but was not provided.
+    at file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/artifacts/social-workflow/node_modules/.vite-temp/vite.config.ts.timestamp-1774639542754-3791a13f7ca44.mjs:10:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+    at async loadConfigFromBundledFile (file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/node_modules/.pnpm/vite@7.3.1_@types+node@25.5_dd6475a36cad374b548325afcd4c0c34/node_modules/vite/dist/node/chunks/config.js:35909:12)
+    at async bundleAndLoadConfigFile (file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/node_modules/.pnpm/vite@7.3.1_@types+node@25.5_dd6475a36cad374b548325afcd4c0c34/node_modules/vite/dist/node/chunks/config.js:35797:17)
+    at async loadConfigFromFile (file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/node_modules/.pnpm/vite@7.3.1_@types+node@25.5_dd6475a36cad374b548325afcd4c0c34/node_modules/vite/dist/node/chunks/config.js:35764:42)
+    at async resolveConfig (file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/node_modules/.pnpm/vite@7.3.1_@types+node@25.5_dd6475a36cad374b548325afcd4c0c34/node_modules/vite/dist/node/chunks/config.js:35413:22)
+    at async _createServer (file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/node_modules/.pnpm/vite@7.3.1_@types+node@25.5_dd6475a36cad374b548325afcd4c0c34/node_modules/vite/dist/node/chunks/config.js:25362:67)
+    at async CAC.<anonymous> (file:///C:/Users/prateek/Downloads/SOCIALIDIOTS/Attached-Assets/node_modules/.pnpm/vite@7.3.1_@types+node@25.5_dd6475a36cad374b548325afcd4c0c34/node_modules/vite/dist/node/cli.js:572:18)[39m
+ ELIFECYCLE  Command failed with exit code 1.

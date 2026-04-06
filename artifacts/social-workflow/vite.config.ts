@@ -4,13 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-const rawPort = process.env.PORT;
-
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
+const rawPort = process.env.PORT || "5173";
 
 const port = Number(rawPort);
 
@@ -18,17 +12,43 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = process.env.BASE_PATH;
+const basePath = process.env.BASE_PATH || "/";
 
-if (!basePath) {
-  throw new Error(
-    "BASE_PATH environment variable is required but was not provided.",
-  );
+function viteTerminalLogPlugin() {
+  return {
+    name: 'vite-terminal-log-plugin',
+    configureServer(server: any) {
+      server.middlewares.use((req: any, res: any, next: any) => {
+        if (req.url === '/__terminal_log' && req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk: string) => body += chunk);
+          req.on('end', () => {
+            try {
+              const { type, message } = JSON.parse(body);
+              const prefix = '\x1b[36m[CLIENT]\x1b[0m ';
+              if (type === 'error') console.error(prefix + '\x1b[31m' + message + '\x1b[0m');
+              else if (type === 'warn') console.warn(prefix + '\x1b[33m' + message + '\x1b[0m');
+              else console.log(prefix + message);
+              res.setHeader('Access-Control-Allow-Origin', '*');
+              res.end('ok');
+            } catch(e) { res.end('err'); }
+          });
+        } else if (req.url === '/__terminal_log' && req.method === 'OPTIONS') {
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+          res.end();
+        } else {
+          next();
+        }
+      });
+    }
+  };
 }
 
 export default defineConfig({
   base: basePath,
   plugins: [
+    viteTerminalLogPlugin(),
     react(),
     tailwindcss(),
     runtimeErrorOverlay(),
